@@ -46,8 +46,8 @@
   <apply executable="php" failonerror="true">
    <arg value="-l" />
 
-   <fileset dir="${basedir}/application/modules">
-    <include name="*.class.php" />
+   <fileset dir="${basedir}/lib">
+    <include name="class.*.php" />
     <modified />
    </fileset>
 
@@ -62,7 +62,7 @@
   <exec executable="phploc">
    <arg value="--log-csv" />
    <arg value="${basedir}/build/logs/phploc.csv" />
-   <arg path="${basedir}/application/modules/" />
+   <arg path="${basedir}/lib/" />
   </exec>
  </target>
 
@@ -71,14 +71,14 @@
    <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
    <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
    <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
-   <arg path="${basedir}/application/modules/" />
+   <arg path="${basedir}/lib/" />
   </exec>
  </target>
 
  <target name="phpmd"
          description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
   <exec executable="phpmd">
-   <arg path="${basedir}/application/modules/" />
+   <arg path="${basedir}/lib/" />
    <arg value="xml" />
    <arg value="cleancode" />
    <arg value="--reportfile" />
