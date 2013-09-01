@@ -10,3 +10,10 @@
   Author: Daithi Coombes
   Author URI: http://david-coombes.com
  */
+
+//load api-con
+require_once( WP_PLUGIN_DIR . '/api-connection-manager/index.php' );
+
+//construct autoflow
+require_once( 'lib/class.autoflow.php' );
+$autoflow = new Autoflow();
