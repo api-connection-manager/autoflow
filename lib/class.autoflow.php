@@ -28,8 +28,16 @@ class Autoflow{
 		print '<ul><li>' . implode( '</li><li>', $links ) . '</ul>';
 	}
 
-	public function do_callback( API_Con_DTO $dto ){
-		var_dump("doing callback");
-		var_dump($dto);
+	public function do_callback( API_Con_Service $service, API_Con_DTO $dto ){
+
+		//check connection
+		$res = $service->request('/me', null, null, false);
+		var_dump($res);
+		$body = json_decode( $res['body'] );
+
+		if ( !$body->error )
+			var_dump(API_Con_Manager::connect_user( $service ));
+
+		var_dump(API_Con_Manager::get_user_connections());
 	}
 }
