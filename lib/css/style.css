@@ -1,0 +1,8 @@
+.autoflow-login ul{
+	width: 200px;
+	margin: auto;
+}
+.autoflow-login li{
+	float: left;
+	margin: 10px;
+}
