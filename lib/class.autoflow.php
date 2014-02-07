@@ -55,14 +55,17 @@ class Autoflow{
 	 */
 	public function do_callback( API_Con_Service $service, API_Con_DTO $dto ){
 
+		var_dump( func_get_args() );
+
 		//check connection
 		$res = $service->request('/me', null, null, false);
-		var_dump($res);
+
+		//handle errors
+		if ( is_wp_error($res) )
+			die('Autoflow Error: ' . $res->get_error_message() );
+
 		$body = json_decode( $res['body'] );
+		var_dump(API_Con_Manager::connect_user( $service ));
 
-		if ( !$body->error )
-			var_dump(API_Con_Manager::connect_user( $service ));
-
-		var_dump(API_Con_Manager::get_user_connections());
 	}
 }
