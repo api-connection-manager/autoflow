@@ -9,25 +9,50 @@ class Autoflow{
 	function __construct(){
 
 		//hooks
-		add_action( 'login_footer', array( &$this, 'print_login_buttons' ) );
+		add_action( 'login_enqueue_scripts', array( &$this, 'login_enqueue_scripts' ) );
+		add_action( 'login_footer', array( &$this, 'get_login_buttons' ) );
+		add_shortcode( 'AutoFlow', array( &$this, 'get_login_buttons' ) );
 	}
 
 	/**
-	 * Print login links for wp login form footer
-	 * @todo  write unit tests
+	 * Enqueue styles and scripts for login page.
+	 * Callback for action 'login_enqueue_scripts'
 	 */
-	function print_login_buttons(){
+	public function login_enqueue_scripts(){
+
+		wp_enqueue_style( 'autoflow', plugins_url() . '/autoflow/lib/css/style.css' );
+	}
+
+	/**
+	 * Print and return login links
+	 * @return string Returns the html after printing to stdout
+	 */
+	public function get_login_buttons(){
 
 		global $API_Con_Manager;
+		global $dont_print;
 		$links = array();
+		$html = '<div class="autoflow-login">';
 
 		//get active services
 		foreach( $API_Con_Manager->get_services( 'active' ) as $service )
 			$links[] = $service->get_login_link( array( __CLASS__, 'do_callback', ) );
 
-		print '<ul><li>' . implode( '</li><li>', $links ) . '</ul>';
+		$html .= '<ul><li>' 
+			. implode( '</li><li>', $links ) 
+			. '</ul>'
+			. '</div>';
+
+		if ( !$dont_print )
+			print $html;
+		return $html;
 	}
 
+	/**
+	 * Callback for handling loging in to third party services
+	 * @param  API_Con_Service $service The service object
+	 * @param  API_Con_DTO     $dto     The data transport object
+	 */
 	public function do_callback( API_Con_Service $service, API_Con_DTO $dto ){
 
 		//check connection

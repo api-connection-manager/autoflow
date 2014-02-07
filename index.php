@@ -13,6 +13,7 @@
 
 //load api-con
 require_once( WP_PLUGIN_DIR . '/api-connection-manager/index.php' );
+global $API_Connection_Manager;
 
 //construct autoflow
 require_once( 'lib/class.autoflow.php' );
