@@ -55,16 +55,12 @@ class Autoflow{
 	 */
 	public function do_callback( API_Con_Service $service, API_Con_DTO $dto ){
 
-		//get profile
-		$res = $service->request('/me', null, null, false);
-
 		//handle errors
 		if ( is_wp_error($res) )
 			die('Autoflow Error: ' . $res->get_error_message() );
 
-		//get uid
-		$body = json_decode( $res['body'] );		
-		$uid = $service->get_uid( $body );
+		//get profile
+		$uid = $service->get_uid();
 
 		//login
 		if ( !$this->login( $service, $uid ) )
@@ -88,12 +84,21 @@ class Autoflow{
 	 */
 	private function login( API_Con_Service $service, $uid ){
 
+		global $API_Con_Manager;
 		$connections = API_Con_Manager::get_connections();
 
 		//look for uid in $connections
-		foreach ( $connections as $user => $data )
-			if ( $data[$service->name] == $uid )
-				return $API_Con_Manager::connect_user( $service, get_user( $user ) );
+		foreach ( $connections as $user_id => $data )
+			if ( $data[$service->name][0] == $uid ){
+
+				$user = get_user_by( 'id', $user_id );
+
+				wp_set_current_user( $user_id, $user->user_login );
+				wp_set_auth_cookie( $user_id );
+				do_action( 'wp_login', $user->user_login );
+
+				return true;
+			}
 
 		return false;
 	}
