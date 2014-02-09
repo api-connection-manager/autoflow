@@ -55,17 +55,46 @@ class Autoflow{
 	 */
 	public function do_callback( API_Con_Service $service, API_Con_DTO $dto ){
 
-		var_dump( func_get_args() );
-
-		//check connection
+		//get profile
 		$res = $service->request('/me', null, null, false);
 
 		//handle errors
 		if ( is_wp_error($res) )
 			die('Autoflow Error: ' . $res->get_error_message() );
 
-		$body = json_decode( $res['body'] );
-		var_dump(API_Con_Manager::connect_user( $service ));
+		//get uid
+		$body = json_decode( $res['body'] );		
+		$uid = $service->get_uid( $body );
 
+		//login
+		if ( !$this->login( $service, $uid ) )
+			$url = wp_registration_url();
+		else
+			$url = admin_url( 'profile.php' );
+
+		//print javascript window.opener
+		?>
+		<script type="text/javascript">
+			window.opener.location.href = '<?php echo $url; ?>';
+			window.close();
+		</script>
+		<?php
+	}
+
+	/**
+	 * Try logging in user
+	 * @param  API_Con_Service $service The service object
+	 * @param  string          $uid     The user's service uid
+	 */
+	private function login( API_Con_Service $service, $uid ){
+
+		$connections = API_Con_Manager::get_connections();
+
+		//look for uid in $connections
+		foreach ( $connections as $user => $data )
+			if ( $data[$service->name] == $uid )
+				return $API_Con_Manager::connect_user( $service, get_user( $user ) );
+
+		return false;
 	}
 }
