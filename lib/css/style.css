@@ -1,8 +1,12 @@
+.autoflow-login{
+	display: table;
+	margin: 0 auto;
+}
 .autoflow-login ul{
-	width: 200px;
-	margin: auto;
+	list-style: none;
+	padding: 20px 0;
 }
 .autoflow-login li{
-	float: left;
+	display: inline;
 	margin: 10px;
 }
