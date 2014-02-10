@@ -9,7 +9,7 @@ class Autoflow{
 	function __construct(){
 
 		//hooks
-		add_action( 'login_enqueue_scripts', array( &$this, 'login_enqueue_scripts' ) );
+		add_action( 'login_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
 		add_action( 'login_footer', array( &$this, 'get_login_buttons' ) );
 		add_shortcode( 'AutoFlow', array( &$this, 'get_login_buttons' ) );
 	}
@@ -18,7 +18,7 @@ class Autoflow{
 	 * Enqueue styles and scripts for login page.
 	 * Callback for action 'login_enqueue_scripts'
 	 */
-	public function login_enqueue_scripts(){
+	public function enqueue_scripts(){
 
 		wp_enqueue_style( 'autoflow', plugins_url() . '/autoflow/lib/css/style.css' );
 	}
@@ -28,6 +28,8 @@ class Autoflow{
 	 * @return string Returns the html after printing to stdout
 	 */
 	public function get_login_buttons(){
+
+		$this->enqueue_scripts();
 
 		global $API_Con_Manager;
 		global $dont_print;
@@ -43,9 +45,7 @@ class Autoflow{
 			. '</ul>'
 			. '</div>';
 
-		if ( !$dont_print )
-			print $html;
-		return $html;
+		print $html;
 	}
 
 	/**
